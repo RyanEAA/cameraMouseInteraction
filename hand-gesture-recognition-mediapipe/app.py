@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # I'm using a  python virtual environment 3.9.6
-# make sure to run pip install opencv-python mediapipe tensorflow pyautogui 
-# brew install python-tk
+
 import csv
 import copy
 import argparse
@@ -44,22 +43,34 @@ def get_args():
     return args
 
 
-def mouseMovement(finger, screenWidth, screenHeight):
-
+def mouseMovement(hand, screenWidth, screenHeight):
+    # keep track of finger 8 index
+    pointer = hand.landmark[8]
+    middle = hand.landmark[12]
+    thumb = hand.landmark[4]
+    
 
     # print statements
-    print("Screen width:", screenWidth)
-    print("Screen height:", screenHeight)
+    #print("Screen width:", screenWidth)
+    #print("Screen height:", screenHeight)
 
     # transform the x and y coordinates to the screen coordinates
-    x = int(finger.x * screenWidth)
-    y = int(finger.y * screenHeight)
-    pyautogui.moveTo(x, y)
+    x = int(pointer.x * screenWidth)
+    y = int(pointer.y * screenHeight)
+    pyautogui.moveTo(x, y)    
+    
+    # print("Mouse Movement")
+    # print("index finger:", pointer)
+    # print("middle finger:", middle)
+    # print("thumb finger:", thumb)
 
-    print("Mouse Movement")
-    print("x:", finger.x)
-    print("y:", finger.y)
-    print("z:", finger.z)
+    # calculate distance between middle and thumb
+    thumb_middle_distance = ((middle.x - thumb.x)**2 + (middle.y - thumb.y)**2)**0.5
+    # distance to click normalized to screen width
+    # click_distance = 
+    if thumb_middle_distance < 0.1:
+        pyautogui.click()
+        print("click")
 
 
 
@@ -161,8 +172,7 @@ def main():
                 
 
                 # currently print mouse movement
-                print(hand_landmarks.landmark[8])
-                mouseMovement(hand_landmarks.landmark[8], screenHeight=height, screenWidth=width)
+                mouseMovement(hand_landmarks, screenHeight=height, screenWidth=width)
 
                 #print(hand_landmarks.landmark[8])
                 # Bounding box calculation
