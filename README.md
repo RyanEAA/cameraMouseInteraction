@@ -1,7 +1,9 @@
 - extension of kinivi's extension of kazuhito00
 
-# VIDEO LINK
-https://drive.google.com/file/d/1lWsrJPBiqHHcbdq15BBJA7wpRUm9oaiv/view?usp=sharing
+# VIDEO
+
+https://github.com/user-attachments/assets/2c3cb808-8676-45ff-aa54-89977a30d9fc
+
 # Requirements
 - python virtual environment 3.9.6
 - make sure to install  python packages
