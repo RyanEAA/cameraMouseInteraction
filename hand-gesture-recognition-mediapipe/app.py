@@ -21,6 +21,8 @@ from model import PointHistoryClassifier
 import pyautogui
 import tkinter as tk
 
+
+
 def get_args():
     parser = argparse.ArgumentParser()
 
@@ -43,7 +45,33 @@ def get_args():
     return args
 
 
-def mouseMovement(hand, screenWidth, screenHeight):
+previous_x, previous_y = None, None
+
+def smoothingCoordinate(x, y, smoothing=0.9):
+    # keep track of the previous x and y coordinates
+    global previous_x, previous_y
+
+    # apply the smoothing factor
+    if previous_x is None or previous_y is None:  # First iteration
+        previous_x, previous_y = x, y
+    else:
+        # Apply the smoothing factor
+        previous_x = previous_x * smoothing + (1 - smoothing) * x
+        previous_y = previous_y * smoothing + (1 - smoothing) * y
+
+    return previous_x, previous_y
+
+# Calculate a dynamic threshold based on the bounding box size
+def calculateDynamicThreshold(hand_landmarks):
+    # Example: Use the distance between the wrist (0) and middle fingertip (12) as a baseline
+    wrist = hand_landmarks.landmark[0]
+    middle_tip = hand_landmarks.landmark[12]
+    distance = ((wrist.x - middle_tip.x)**2 + (wrist.y - middle_tip.y)**2)**0.5
+    return distance * 0.2  # Adjust the scaling factor as needed
+
+def handMouseInteraction(hand, screenWidth, screenHeight):
+    global previous_x, previous_y
+
     # keep track of finger 8 index
     pointer = hand.landmark[8]
     middle = hand.landmark[12]
@@ -55,9 +83,13 @@ def mouseMovement(hand, screenWidth, screenHeight):
     #print("Screen height:", screenHeight)
 
     # transform the x and y coordinates to the screen coordinates
-    x = int(pointer.x * screenWidth)
-    y = int(pointer.y * screenHeight)
-    pyautogui.moveTo(x, y)    
+    x = pointer.x * screenWidth
+    y = pointer.y * screenHeight
+
+    # smoothing the movement of the mouse
+    smooth_x, smooth_y = smoothingCoordinate(x, y, smoothing=0.25)
+
+    pyautogui.moveTo(smooth_x, smooth_y)    
     
     # print("Mouse Movement")
     # print("index finger:", pointer)
@@ -67,8 +99,8 @@ def mouseMovement(hand, screenWidth, screenHeight):
     # calculate distance between middle and thumb
     thumb_middle_distance = ((middle.x - thumb.x)**2 + (middle.y - thumb.y)**2)**0.5
     # distance to click normalized to screen width
-    # click_distance = 
-    if thumb_middle_distance < 0.1:
+    click_threshold = calculateDynamicThreshold(hand)
+    if thumb_middle_distance < click_threshold:
         pyautogui.click()
         print("click")
 
@@ -141,6 +173,9 @@ def main():
     #  ########################################################################
     mode = 0
 
+    #####################################################################
+
+
     while True:
         # get the number of frames per second
         fps = cvFpsCalc.get()
@@ -170,9 +205,8 @@ def main():
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
                                                   results.multi_handedness):
                 
-
-                # currently print mouse movement
-                mouseMovement(hand_landmarks, screenHeight=height, screenWidth=width)
+                # mouse movement
+                handMouseInteraction(hand_landmarks, screenHeight=height, screenWidth=width)
 
                 #print(hand_landmarks.landmark[8])
                 # Bounding box calculation
