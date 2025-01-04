@@ -184,7 +184,7 @@ def main():
         key = cv.waitKey(10)
         if key == 27:  # ESC
             break
-        number, mode = select_mode(key, mode)
+        number, mode = select_mode(key, mode) # for changing mode
 
         # Camera capture #####################################################
         ret, image = cap.read()
@@ -206,7 +206,8 @@ def main():
                                                   results.multi_handedness):
                 
                 # mouse movement
-                handMouseInteraction(hand_landmarks, screenHeight=height, screenWidth=width)
+                if mode == 3:
+                    handMouseInteraction(hand_landmarks, screenHeight=height, screenWidth=width)
 
                 #print(hand_landmarks.landmark[8])
                 # Bounding box calculation
@@ -274,10 +275,13 @@ def select_mode(key, mode):
         number = key - 48
     if key == 110:  # n
         mode = 0
-    if key == 107:  # k
+    if key == 107:  # k for entering training mode
         mode = 1
     if key == 104:  # h
         mode = 2
+    if key == ord('p') or key == ord('P'): # p for camera mouse tracking
+        print("In camera mouse tracking mode")
+        mode = 3
     return number, mode
 
 
