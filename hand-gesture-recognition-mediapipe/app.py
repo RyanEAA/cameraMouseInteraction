@@ -282,6 +282,9 @@ def select_mode(key, mode):
     if key == ord('p') or key == ord('P'): # p for camera mouse tracking
         print("In camera mouse tracking mode")
         mode = 3
+    if key == ord('g') or key == ord('G'):
+        mode = 4
+        print("Entering Game mode")
     return number, mode
 
 
