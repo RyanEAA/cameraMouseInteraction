@@ -174,8 +174,6 @@ def main():
     mode = 0
 
     #####################################################################
-
-
     while True:
         # get the number of frames per second
         fps = cvFpsCalc.get()
@@ -204,7 +202,6 @@ def main():
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
                                                   results.multi_handedness):
-                
                 # mouse movement
                 if mode == 3:
                     handMouseInteraction(hand_landmarks, screenHeight=height, screenWidth=width)

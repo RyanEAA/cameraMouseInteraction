@@ -22,7 +22,13 @@ https://github.com/user-attachments/assets/238ac4d6-13a5-4d5d-818b-3c546c66671d
   ```
   brew install python-tk
   ```
-- if you get the error saying "ValueError: Could not open 'model/keypoint_classifier/keypoint_classifier.tflite'." go to terminal and type 'cd hand-gesture-recognition-mediapipe' then run
+- if you get the error saying "ValueError: Could not open 'model/keypoint_classifier/keypoint_classifier.tflite'." go to terminal and type 'cd hand-gesture-recognition-mediapipe' then 
+
+1. move to media folder
+```
+cd hand-gesture-recognition-mediapipe
+```
+2. give correct file permission to load model
   ```
   chmod 644 model/keypoint_classifier/keypoint_classifier.tflite
   ```
